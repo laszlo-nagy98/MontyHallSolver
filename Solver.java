@@ -17,10 +17,11 @@ public class Solver
   //array representing the doors
   private static char doors[];
 
+  //variable to store our strategy
   private static boolean switchDoor;
 
+  // the door currenctly picked
   private static int pickedDoor;
-  private static int oldPickedDoor;
 
 
   public static void main(String args[])
@@ -31,62 +32,67 @@ public class Solver
 
     //whether to switch doors or not
     switchDoor = true;
-    //number of doors in the game
+
+    //number of doors in the game, given by command line argument
     noOfDoors = Integer.parseInt(args[0]);
 
-    //make array
+    //make an entry in the array for each door
     doors = new char[noOfDoors];
 
     /*repeat game enough times for results to be representetive of
-      probabilities*/
+      probabilities, and keep track of score*/
     for (int i = 0; i < 1000000; i++)
     {
-
-      //initially all doors are closed
-      closedDoors = noOfDoors;
-
-      //initialise array with one car and the rest goats
-      Arrays.fill(doors, 'G');
-      doors[rand.nextInt(noOfDoors)] = 'C';
-
-      /*for (char c : doors)
-        System.out.print(c);
-      System.out.println();*/
-
-      //randomly pick a door
-      pickedDoor = rand.nextInt(noOfDoors);
-      /*System.out.println("Door picked is: " + (pickedDoor + 1));*/
-      //keep opening doors until there are only 2
-      while (closedDoors > 2)
-      {
-
-        int openedDoor = openDoor(pickedDoor);
-        /*for (char c : doors)
-          System.out.print(c);
-        System.out.println();*/
-        if(closedDoors == 2)
-          switchDoor();
-      }//while
-
-      if(doors[pickedDoor] == 'C')
-      {
+      if(playGame())
         wins++;
-        /*System.out.println("You won!");*/
-      }
       else
-      {
         loses++;
-        /*System.out.println("You lost!");*/
-      }
-
     }//for
+
+    //print results
     System.out.println("Wins: {" + wins + "} Loses: {" + loses + "}");
     System.out.println("Chance of winning is: " + (double)wins / (wins + loses)
                         *100 + "%");
   }//main
 
+  //this method sets up the initial game environment
+  private static void initialiseGame()
+  {
+    //initially all doors are closed
+    closedDoors = noOfDoors;
+
+    //initialise array with one car and the rest goats
+    Arrays.fill(doors, 'G');
+    doors[rand.nextInt(noOfDoors)] = 'C';
+  }
+
+  private static boolean playGame()
+  {
+    //set up game environment
+    initialiseGame();
+
+    //randomly pick a door
+    pickedDoor = rand.nextInt(noOfDoors);
+
+    //keep opening doors until there are only 2 closed ones
+    while (closedDoors > 2)
+    {
+      openDoor();
+
+      //switch if this is the last chance to do so
+      if(closedDoors == 2)
+        switchDoor();
+    }//while
+
+    //determine whether the player won and return result
+    if(doors[pickedDoor] == 'C')
+      return true;
+    else
+      return false;
+  }//playGame
+
   //method representing the opening of a door with a goat behind it
-  private static int openDoor(int pickedDoor)
+  private static void openDoor()
   {
     //variable stores which door will be opened
     int doorToOpen;
@@ -102,22 +108,22 @@ public class Solver
 
     //update the amount of closed doors
     closedDoors--;
-    return doorToOpen;
-
   }//openDoor
 
+  //method for switching to another unopened door
   private static void switchDoor()
   {
-    if(switchDoor)
-    {
-      oldPickedDoor = pickedDoor;
+      //save our current pick in a variable
+      int oldPickedDoor = pickedDoor;
+
+      //find a new door that isn't open, and isn't our old pick
       do
       {
         pickedDoor = rand.nextInt(noOfDoors);
       } while (doors[pickedDoor] == 'O' || pickedDoor == oldPickedDoor);
+
+      //update our old pick
       oldPickedDoor = pickedDoor;
-      /*System.out.println("Door picked is: " + (pickedDoor + 1));*/
-    }//if
   }//switchDoor
 
 
