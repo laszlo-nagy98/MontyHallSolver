@@ -2,6 +2,8 @@
 import java.util.Random;
 //used for filling array
 import java.util.Arrays;
+//used for getting user input
+import java.util.Scanner;
 
 public class Solver
 {
@@ -27,32 +29,48 @@ public class Solver
   public static void main(String args[])
   {
     //variables for keeping track of wins and loses
-    int wins = 0;
-    int loses = 0;
+    int wins;
+    int loses;
 
-    //whether to switch doors or not
-    switchDoor = true;
+    // create a scanner so we can read the command-line input
+    Scanner scanner = new Scanner(System.in);
 
-    //number of doors in the game, given by command line argument
-    noOfDoors = Integer.parseInt(args[0]);
+    //text explaining the program to the user
+    System.out.println("This program simulates the Monty Hall problem for any"
+                    + "amount of doors, using three strategies.");
+    System.out.println("Strategy 1: never switch doors");
+    System.out.println("Strategy 2: always switch doors");
+    System.out.println("Strategy 3: only switch doors the last time");
+
+    //prompt to enter number of doors
+    System.out.print("\nEnter the number of doors: ");
+    //save input in appropriate variable
+    noOfDoors = scanner.nextInt();
 
     //make an entry in the array for each door
     doors = new char[noOfDoors];
 
-    /*repeat game enough times for results to be representetive of
-      probabilities, and keep track of score*/
-    for (int i = 0; i < 1000000; i++)
+    //play a set of games with all three strategies
+    for(int strategy = 1; strategy <= 3; strategy++)
     {
-      if(playGame())
-        wins++;
-      else
-        loses++;
-    }//for
+      wins = 0;
+      loses = 0;
+      /*repeat game enough times for results to be representetive of
+        probabilities, and keep track of score*/
+      for (int i = 0; i < 1000000; i++)
+      {
+        if(playGame(strategy))
+          wins++;
+        else
+          loses++;
+      }//for
 
-    //print results
-    System.out.println("Wins: {" + wins + "} Loses: {" + loses + "}");
-    System.out.println("Chance of winning is: " + (double)wins / (wins + loses)
+      //print results
+      System.out.println("\nStrategy " + (strategy) + " results:");
+      System.out.println("Wins: {" + wins + "} Loses: {" + loses + "}");
+      System.out.println("Chance of winning is: " + (double)wins / (wins + loses)
                         *100 + "%");
+    }//for
   }//main
 
   //this method sets up the initial game environment
@@ -66,7 +84,7 @@ public class Solver
     doors[rand.nextInt(noOfDoors)] = 'C';
   }
 
-  private static boolean playGame()
+  private static boolean playGame(int strategy)
   {
     //set up game environment
     initialiseGame();
@@ -79,9 +97,13 @@ public class Solver
     {
       openDoor();
 
-      //switch if this is the last chance to do so
-      if(closedDoors == 2)
+      //with strategy 2, always switch
+      if (strategy == 2)
         switchDoor();
+      //with strategy 3, only switch on the last one
+      else if (strategy == 3 && closedDoors == 2)
+        switchDoor();
+      //strategy 1 never switches
     }//while
 
     //determine whether the player won and return result
