@@ -24,7 +24,7 @@ public class Solver
     int loses = 0;
 
     //number of doors in the game
-    noOfDoors = 5;
+    noOfDoors = Integer.parseInt(args[0]);
 
     //initially all doors are closed
     closedDoors = noOfDoors;
@@ -34,36 +34,38 @@ public class Solver
 
     /*repeat game enough times for results to be representetive of
       probabilities*/
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10000000; i++)
     {
       //initialise array with one car and the rest goats
       Arrays.fill(doors, 'G');
       doors[rand.nextInt(noOfDoors)] = 'C';
 
       //randomly pick a door
-      int pickedDoor = rand.nextInt(noOfDoors - 1);
-
-      //code for testing array
-      /*for (char c : doors)
-        System.out.print(c);
-
-      System.out.println();*/
+      int pickedDoor = rand.nextInt(noOfDoors);
+      /*System.out.println("Door picked is: " + (pickedDoor + 1));*/
 
       //keep opening doors until there are only 2
       while (closedDoors > 2)
       {
-        for (char c : doors)
+        /*for (char c : doors)
           System.out.print(c);
 
-        System.out.println();
+        System.out.println();*/
         openDoor(pickedDoor);
       }
-      for (char c : doors)
+      /*for (char c : doors)
         System.out.print(c);
 
-      System.out.println();
+      System.out.println();*/
+      if(doors[pickedDoor] == 'C')
+        wins++;
+      else
+        loses++;
 
     }//for
+    System.out.println("Wins: {" + wins + "} Loses: {" + loses + "}");
+    System.out.println("Chance of winning is: " + (double)wins / (wins + loses)
+                        *100 + "%");
   }//main
 
   //method representing the opening of a door with a goat behind it
