@@ -44,9 +44,21 @@ public class Solver
 
     //prompt to enter number of doors
     System.out.print("\nEnter the number of doors: ");
-    //save input in appropriate variable
-    noOfDoors = scanner.nextInt();
 
+
+    try
+    {
+      //save input in appropriate variable
+      noOfDoors = scanner.nextInt();
+      if(noOfDoors <= 0)
+        throw new Exception();
+    }
+    catch(Exception e)
+    {
+      System.out.println("Next time enter a valid number!");
+      System.out.println("For now here's the simulation with 3 doors:");
+      noOfDoors = 3;
+    }
     //make an entry in the array for each door
     doors = new char[noOfDoors];
 
