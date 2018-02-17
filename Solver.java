@@ -37,7 +37,7 @@ public class Solver
 
     //text explaining the program to the user
     System.out.println("This program simulates the Monty Hall problem for any"
-                    + "amount of doors, using three strategies.");
+                    + " amount of doors, using three strategies.");
     System.out.println("Strategy 1: never switch doors");
     System.out.println("Strategy 2: always switch doors");
     System.out.println("Strategy 3: only switch doors the last time");
